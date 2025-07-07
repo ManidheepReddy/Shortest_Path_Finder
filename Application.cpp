@@ -1,6 +1,6 @@
-﻿// main.cpp
-// Dijkstra Pathfinding Visualizer using C++, OpenGL, GLFW, GLEW, and Dear ImGui 1.60
-// Single-file example with explicit placement modes and visible controls
+
+// Dijkstra Pathfinding Visualizer using C++, OpenGL, GLFW, GLEW, and ImGui 1.60
+
 
 #include <iostream>
 #include <vector>
@@ -20,7 +20,7 @@ enum CellState { EMPTY, OBSTACLE, START, END, VISITED, PATH };
 enum PlacementMode { MODE_OBSTACLE = 0, MODE_START, MODE_END, MODE_ERASE };
 
 int main() {
-    // GLFW + OpenGL init
+  
     if (!glfwInit()) return -1;
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -29,12 +29,12 @@ int main() {
     glfwMakeContextCurrent(window);
     glewInit();
 
-    // ImGui init
+    
     ImGui::CreateContext();
     ImGui_ImplGlfwGL3_Init(window, true);
     ImGui::StyleColorsDark();
 
-    // Grid data
+    
     int gridSize = DEFAULT_GRID_SIZE;
     std::vector<CellState> grid;
     grid.assign(gridSize * gridSize, EMPTY);
@@ -47,7 +47,7 @@ int main() {
         glfwPollEvents();
         ImGui_ImplGlfwGL3_NewFrame();
 
-        // Controls window
+        
         ImGui::SetNextWindowPos({ 0, 0 });
         ImGui::SetNextWindowSize({ 200, 640 });
         ImGui::Begin("Controls", nullptr,
@@ -69,7 +69,7 @@ int main() {
         }
         ImGui::End();
 
-        // If gridSize changed, reinitialize
+        
         static int prevSize = DEFAULT_GRID_SIZE;
         if (prevSize != gridSize) {
             grid.assign(gridSize * gridSize, EMPTY);
@@ -77,7 +77,7 @@ int main() {
             prevSize = gridSize;
         }
 
-        // Run Dijkstra once when triggered
+        
         if (runDijkstra && startIdx >= 0 && endIdx >= 0) {
             int N = gridSize;
             const int INF = std::numeric_limits<int>::max();
@@ -98,7 +98,7 @@ int main() {
                 return out;
                 };
 
-            // clear VISITED/PATH
+            
             for (auto& cs : grid) if (cs == VISITED || cs == PATH) cs = EMPTY;
 
             while (!pq.empty()) {
@@ -116,7 +116,7 @@ int main() {
                     }
                 }
             }
-            // reconstruct path
+           
             int cur = endIdx;
             while (cur >= 0 && prev[cur] != -1) {
                 cur = prev[cur];
@@ -125,7 +125,7 @@ int main() {
             runDijkstra = false;
         }
 
-        // Draw grid window
+    
         ImGui::SetNextWindowPos({ 200, 0 });
         ImGui::SetNextWindowSize({ WINDOW_SIZE, WINDOW_SIZE });
         ImGui::Begin("Grid", nullptr,
@@ -138,7 +138,7 @@ int main() {
         ImDrawList* draw = ImGui::GetWindowDrawList();
         float cell = (p1.x - p0.x) / gridSize;
 
-        // Handle mouse clicks
+       
         if (ImGui::IsMouseClicked(0)) {
             ImVec2 m = ImGui::GetMousePos();
             if (m.x >= p0.x && m.x < p1.x && m.y >= p0.y && m.y < p1.y) {
@@ -172,7 +172,7 @@ int main() {
             }
         }
 
-        // Draw cells
+        
         for (int r = 0; r < gridSize; r++) {
             for (int c = 0; c < gridSize; c++) {
                 int idx = r * gridSize + c;
@@ -193,13 +193,13 @@ int main() {
         }
         ImGui::End();
 
-        // Render
+      
         ImGui::Render();
         ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
     }
 
-    // Cleanup
+   
     ImGui_ImplGlfwGL3_Shutdown();
     ImGui::DestroyContext();
     glfwTerminate();
